@@ -15,7 +15,7 @@ public class RoomServiceAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RoomServiceAppApplication.class, args);
 		System.out.print(true);
-		System.out.println("Hi");
+	
 	}
 
 }
