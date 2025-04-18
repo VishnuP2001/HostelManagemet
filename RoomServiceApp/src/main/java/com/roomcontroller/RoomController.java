@@ -1,6 +1,7 @@
 package com.roomcontroller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,29 +41,37 @@ public class RoomController {
 	        return ResponseEntity.ok(message);
 	    }
 	    
+	    
 	    @GetMapping("/available")
 	    public ResponseEntity<List<RoomDTO>> getAvailableRooms(
 	            @Valid @RequestParam(required = false) Integer roomId,
-	            @Valid @RequestParam String hostelName) throws Exception {
-	        List<RoomDTO> rooms = roomService.getAllAvailableRooms(roomId, hostelName);
+	            @Valid @RequestParam Long hostelId) throws Exception {
+	        List<RoomDTO> rooms = roomService.getAllAvailableRooms(roomId, hostelId);
 	        return ResponseEntity.ok(rooms);
-	    }
-
-//	    @GetMapping("/hostel")
-//	    public ResponseEntity<List<RoomDTO>> getAllRoomsByHostel(@RequestParam String hostelName) {
-//	        List<RoomDTO> rooms = roomService.getAllRoomsByHostel(hostelName);
-//	        return ResponseEntity.ok(rooms);
-//	    }
+	    }   
 
 	    @DeleteMapping("/delete")
 	    public ResponseEntity<String> deleteRoom(
 	           @Valid @RequestParam(required = false) Integer roomId,
-	            @Valid @RequestParam String hostelName) throws Exception {
-	        String message = roomService.deleteRoomByRoomId(roomId, hostelName);
+	            @Valid @RequestParam Long hostelId) throws Exception {
+	        String message = roomService.deleteRoomByRoomId(roomId, hostelId);
 	        return ResponseEntity.ok(message);
 	    }
 	    @GetMapping("/test")
 	    public String test() {
 	    	return "tested";
 	    }
+	    
+	    /**
+	    @PutMapping("/update/hostelName")
+	    public ResponseEntity<String> updateRooms(@RequestBody Map<String, String> hostelMap) {
+	        String message = roomService.updateHostels(hostelMap);
+	        return ResponseEntity.ok(message);
+	    }**/
+	    /**
+	    @GetMapping("/hostel")
+	    public ResponseEntity<List<RoomDTO>> getAllRoomsByHostel(@RequestParam String hostelName) {
+	        List<RoomDTO> rooms = roomService.getAllRoomsByHostel(hostelName);
+	        return ResponseEntity.ok(rooms);
+	    }**/
 }

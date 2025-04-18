@@ -77,4 +77,12 @@ public class Room {
 		this.roomId = roomId;
 	}
 
+	@Override
+	public String toString() {
+		return "Room [roomId=" + roomId + ", roomCapacity=" + roomCapacity + ", price=" + price + ", status=" + status
+				+ "]";
+	}
+	
+	
+
 }

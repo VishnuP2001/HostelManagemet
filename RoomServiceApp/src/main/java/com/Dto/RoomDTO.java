@@ -1,7 +1,9 @@
 package com.Dto;
 
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -20,8 +22,8 @@ public class RoomDTO {
 	@Pattern(regexp = "AVAILABLE|OCCUPIED", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Status must be one of: AVAILABLE, OCCUPIED, MAINTENANCE")
 	private String status;
 
-	@NotBlank(message = "Hostel name is required")
-	private String hostelName;
+	@NotNull(message = "hostelId cannot be null")
+	private Long hostelId;
 
 
 	public Integer getRoomId() {
@@ -56,12 +58,20 @@ public class RoomDTO {
 		this.status = status;
 	}
 
-	public String getHostelName() {
-		return hostelName;
+	public Long getHostelId() {
+		return hostelId;
 	}
 
-	public void setHostelName(String hostelName) {
-		this.hostelName = hostelName;
+	public void setHostelId(Long hostelId) {
+		this.hostelId = hostelId;
 	}
+
+	@Override
+	public String toString() {
+		return "RoomDTO [roomId=" + roomId + ", roomCapacity=" + roomCapacity + ", price=" + price + ", status="
+				+ status + ", hostelId=" + hostelId + "]";
+	}
+
+	
 
 }

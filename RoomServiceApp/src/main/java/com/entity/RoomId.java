@@ -11,8 +11,8 @@ public class RoomId implements Serializable{
 	
 	private Integer roomId;
 	
-	@Column(name = "hostel_name")
-	private String hostelName;
+	@Column(name = "hostel_Id")
+	private Long hostelId;
 
 
 	public Integer getRoomId() {
@@ -23,44 +23,28 @@ public class RoomId implements Serializable{
 		this.roomId = roomId;
 	}
 
-	public String getHostelName() {
-		return hostelName;
+	@Override
+	public String toString() {
+		return "RoomId [roomId=" + roomId + ", hostelId=" + hostelId + "]";
 	}
 
-	public void setHostelName(String hostelName) {
-		this.hostelName = hostelName;
-	}
-
-	public RoomId(int roomId, String hostelName) {
+	public RoomId(Integer roomId, Long hostelId) {
+		super();
 		this.roomId = roomId;
-		this.hostelName = hostelName;
+		this.hostelId = hostelId;
 	}
+
+public Long getHostelId() {
+		return hostelId;
+	}
+
+	public void setHostelId(Long hostelId) {
+		this.hostelId = hostelId;
+	}
+
 public RoomId() {
 	
 }
-	@Override
-	public String toString() {
-		return "RoomId [roomId=" + roomId + ", hostelName=" + hostelName + ", getRoomId()=" + getRoomId()
-				+ ", getHostelName()=" + getHostelName() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
-				+ ", toString()=" + super.toString() + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(hostelName, roomId);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RoomId other = (RoomId) obj;
-		return Objects.equals(hostelName, other.hostelName) && Objects.equals(roomId, other.roomId);
-	}
 	
 	
 

@@ -13,7 +13,7 @@ public interface HostelClient {
 	
 	
 	 @GetMapping("/exisits")
-	    public boolean hostelExisits(@RequestParam String hostelName);
+	    public boolean hostelExisits(@RequestParam Long hostelId);
 	
 
 }
