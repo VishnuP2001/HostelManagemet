@@ -1,6 +1,7 @@
 package com.DTO;
 
 import com.Entity.Status;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.Min;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class HostelDTO {
 	
 		@Nullable
@@ -18,7 +20,7 @@ public class HostelDTO {
 	   @NotBlank(message = "Hostel name is required")
 	    private String hostelName;
 
-	    @NotBlank(message = "Location is required")
+		@NotBlank(message = "Location is required")
 	    private String location;
 
 	    @Positive(message = "Price must be greater than 0")
@@ -77,5 +79,12 @@ public class HostelDTO {
 		public void setHostelId(Long hostelId) {
 			this.hostelId = hostelId;
 		}
+
+		@Override
+		public String toString() {
+			return "HostelDTO [hostelId=" + hostelId + ", hostelName=" + hostelName + ", location=" + location
+					+ ", price=" + price + ", hostelCapacity=" + hostelCapacity + ", status=" + status + "]";
+		}
+	   
 
 }

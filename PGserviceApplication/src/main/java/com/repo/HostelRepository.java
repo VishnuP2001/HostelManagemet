@@ -16,8 +16,12 @@ public interface HostelRepository extends JpaRepository<Hostel, Long> {
 	
 	List<Hostel> findBypriceLessThanEqualAndStatus(double price, Status status);
 	
-	void deleteByHostelName(String hostelName);
+	List<Hostel> findByHostelIdOrHostelName(Long hostelId, String hostelName);
 	
 	boolean existsByHostelName(String hostelName);
+	
+	boolean existsByHostelId(Long hostelId);
+
+	void deleteByHostelIdAndHostelName(Long hostelId, String hostelName);
 
 }

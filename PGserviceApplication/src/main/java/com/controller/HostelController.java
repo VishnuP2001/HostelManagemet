@@ -31,8 +31,17 @@ public class HostelController {
 	        List<HostelDTO> hostelList = hostelService.getHostelsByLocation(location, price);
 	        return ResponseEntity.ok(hostelList);
 	    }
+	    
+	    @GetMapping("/get/hostel")
+	    public ResponseEntity<List<HostelDTO>> getHostelsByHostelNameAndHostelId(
+	            @RequestParam(required = false) Long hostelId,
+	            @RequestParam(required = false) String hostelName) {
 
-	    @PostMapping
+	        List<HostelDTO> hostelList = hostelService.getHostelsByHostelNameAndHostelId(hostelId, hostelName);
+	        return ResponseEntity.ok(hostelList);
+	    }
+
+	    @PostMapping("/add")
 	    public ResponseEntity<String> addHostels(@Valid @RequestBody List<HostelDTO> hostelDTOs) {
 	    	logger.info("adding hostel{}");
 	        String message = hostelService.addHostels(hostelDTOs);
@@ -40,16 +49,16 @@ public class HostelController {
 	    }
 
 	    
-	    @PutMapping
+	    @PutMapping("/update")
 	    public ResponseEntity<String> updateHostels( @Valid @RequestBody List<HostelDTO> hostelDTOs) throws Exception {
 	        String message = hostelService.updateHostel(hostelDTOs);
 	        return ResponseEntity.ok(message);
 	    }
 	    
 	    @DeleteMapping("/delete")
-	    public ResponseEntity<String> deleteHostel(@RequestParam String hostelName) {
+	    public ResponseEntity<String> deleteHostel(@RequestParam Long hostelId,@RequestParam(required = false)String hostelName) {
 	    	try {
-	            String message = hostelService.deleteHostel(hostelName);
+	            String message = hostelService.deleteHostel(hostelId,hostelName);
 	            return ResponseEntity.ok(message);
 	        } catch (IllegalArgumentException e) {
 	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -59,8 +68,8 @@ public class HostelController {
 	    }
 	    
 	    @GetMapping("/exisits")
-	    public boolean hostelExisits(@RequestParam String hostelName) {
-	    	return hostelService.hostelExsists(hostelName);
+	    public boolean hostelExisits(@RequestParam Long hostelId) {
+	    	return hostelService.hostelExsists(hostelId);
 	    }
 	    
 	    

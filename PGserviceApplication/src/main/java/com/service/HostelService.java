@@ -2,8 +2,11 @@ package com.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,12 +69,33 @@ public class HostelService {
 		return hostelDTOs;
 	}
 	
+	
+	public List<HostelDTO> getHostelsByHostelNameAndHostelId(Long hostelId, String hostelName){
+		
+		List<Hostel> hostels = new ArrayList<>();
+		if(hostelId != null && hostelName != null) {
+			hostels = hostelRepository.findByHostelIdOrHostelName(hostelId, hostelName);
+		}else if(hostelId != null) {
+			Optional<Hostel> optionalHostel = hostelRepository.findById(hostelId);
+		    hostels = optionalHostel.map(List::of).orElse(Collections.emptyList());
+		}else if(hostelName!= null) {
+			hostels = hostelRepository.findByHostelIdOrHostelName(null,hostelName);
+		}else {
+			hostels = hostelRepository.findAll();
+		}
+		
+		if(hostels.isEmpty()) throw new IllegalArgumentException("No hostels are available for this hostelId"+hostelId + "and hostelName"+ hostelName);
+		List<HostelDTO> hostelDTOs = hostels.stream().map(entity -> modelMapper.map(entity, HostelDTO.class)).collect(Collectors.toList());
+		
+		return hostelDTOs;
+	}
+	
 	public String addHostels(List<HostelDTO> hostelDTOs) {
 		
 		if(hostelDTOs.isEmpty()) throw new IllegalArgumentException("Data which you have sent is empty");
 		List<Hostel> hostels = hostelDTOs.stream().map(dto ->{
-			if(hostelRepository.existsByHostelName(dto.getHostelName())) {
-				throw new IllegalStateException("Hostel name already exisits"+ dto.getHostelName());
+			if(dto.getHostelId() != null && hostelRepository.existsByHostelId(dto.getHostelId())) {
+				throw new IllegalStateException("Hostel Id already exisits"+ dto.getHostelId());
 			}
 			Hostel hostel = modelMapper.map(dto,Hostel.class);
 		return hostel;
@@ -81,9 +105,14 @@ public class HostelService {
 	}
 	
 	public String updateHostel(List<HostelDTO> hostelDTOs) throws Exception {
+		logger.info("Entering into updateHostel{}");
 	    List<errordtls> err = new ArrayList<>();
 	    try {
 	    List<Hostel> hostels = hostelDTOs.stream().map(dto -> {
+	    	if(dto.getHostelId() == null) {
+	    		 err.add(new errordtls(Constants.ERROR_1, Constants.errMsg, String.valueOf(dto.getHostelId())));
+	    		 return null;
+	    	}
 	        Optional<Hostel> optionalHostel = hostelRepository.findById(dto.getHostelId());
 	        if (optionalHostel.isEmpty()) {
 	            err.add(new errordtls(Constants.ERROR_1, Constants.errMsg, String.valueOf(dto.getHostelId())));
@@ -102,7 +131,6 @@ public class HostelService {
 	    	logger.info("Entering into errors{}", err.toString());
 	        throw new ResourceNotFoundException(err);
 	    }
-
 	    hostelRepository.saveAll(hostels);
 	    return "Hostel data updated successfully";
 	    }
@@ -116,27 +144,29 @@ public class HostelService {
 	}
 	@SuppressWarnings("unlikely-arg-type")
 	@Transactional
-	public String deleteHostel(String hostelName) throws Exception {
+	public String deleteHostel(Long hostelId, String hostelName) throws Exception {
 		logger.info("Entering into deleteHostel{}", hostelName);
 		try {
-			
-		if(hostelRepository.existsByHostelName(hostelName)) {
-			ResponseEntity<String> roomstatus = roomClient.deleteRoom(null, hostelName);
-			logger.info("deleteing rooms{}",roomstatus.getBody());
-			System.out.println(roomstatus.getBody());
-			hostelRepository.deleteByHostelName(hostelName);
-			
-		}else throw new IllegalArgumentException("data is not found with" + hostelName);
-		
-		return "Data deleted successfully for"+hostelName;
-		}
-		catch(Exception ex) {
+			if (hostelRepository.existsByHostelId(hostelId)) {
+				ResponseEntity<String> roomstatus = roomClient.deleteRoom(null, hostelId);
+				logger.info("deleteing rooms{}", roomstatus.getBody());
+				if (hostelId != null && hostelName != null) {
+					hostelRepository.deleteByHostelIdAndHostelName(hostelId, hostelName);
+				} else if (hostelId != null) {
+					hostelRepository.deleteById(hostelId);
+				}
+			} else {
+				throw new Exception("hostelId is not found with" + hostelId);
+			}
+
+			return "Data deleted successfully for" + hostelName;
+		} catch (Exception ex) {
 			throw new Exception(ex.getMessage());
 		}
 	}
 	
-	public boolean hostelExsists(String hostelName) {
-		return hostelRepository.existsByHostelName(hostelName);
+	public boolean hostelExsists(Long hostelId) {
+		return hostelRepository.existsByHostelId(hostelId);
 	}
 	
 	
